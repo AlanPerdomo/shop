@@ -51,7 +51,6 @@ class MyApp extends StatelessWidget {
           hintColor: Colors.deepOrange,
           fontFamily: 'Lato',
         ),
-        home: const ProductsOverviewPage(),
         routes: {
           AppRoutes.home: (ctx) => const ProductsOverviewPage(),
           AppRoutes.productDetail: (ctx) => const ProductDetailPage(),

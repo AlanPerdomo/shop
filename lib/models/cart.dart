@@ -38,7 +38,7 @@ class Cart with ChangeNotifier {
           () => CartItem(
                 id: DateTime.now().toString(),
                 productId: product.id,
-                name: product.title,
+                name: product.name,
                 quantity: 1,
                 price: product.price,
               ));

@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:flutter/material.dart';
 import 'package:shop/utils/app_routes.dart';
 
@@ -13,6 +11,7 @@ class AppDrawer extends StatelessWidget {
         children: [
           AppBar(
             title: const Text('Bem vindo'),
+            automaticallyImplyLeading: false,
           ),
           const Divider(),
           ListTile(
