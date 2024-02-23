@@ -13,8 +13,10 @@ class ProductFormPage extends StatefulWidget {
 class _ProductFormPageState extends State<ProductFormPage> {
   final _priceFocus = FocusNode();
   final _descriptionFocus = FocusNode();
+
   final _imageUrlFocus = FocusNode();
   final _imageUrlController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
 
@@ -49,6 +51,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     super.dispose();
     _priceFocus.dispose();
     _descriptionFocus.dispose();
+
     _imageUrlFocus.removeListener(updateImage);
     _imageUrlFocus.dispose();
   }
@@ -61,7 +64,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
     bool isValidUrl = Uri.tryParse(url)?.hasAbsolutePath ?? false;
     bool endsWithFile = url.toLowerCase().endsWith('.png') ||
         url.toLowerCase().endsWith('.jpg') ||
-        url.toLowerCase().endsWith('.jpeg');
+        url.toLowerCase().endsWith('.jpeg') ||
+        url.toLowerCase().endsWith('.webp');
     return isValidUrl && endsWithFile;
   }
 
@@ -86,12 +90,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Formulário de Produto'),
+        title: const Text('Formulário de Produto'),
         actions: [
           IconButton(
             onPressed: _submitForm,
             icon: const Icon(Icons.save),
-          ),
+          )
         ],
       ),
       body: Padding(
@@ -110,15 +114,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 onSaved: (name) => _formData['name'] = name ?? '',
                 validator: (_name) {
                   final name = _name ?? '';
-
                   if (name.trim().isEmpty) {
                     return 'Nome é obrigatório.';
                   }
-
                   if (name.trim().length < 3) {
                     return 'Nome precisa no mínimo de 3 letras.';
                   }
-
                   return null;
                 },
               ),
@@ -210,10 +211,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     alignment: Alignment.center,
                     child: _imageUrlController.text.isEmpty
                         ? const Text('Informe a Url')
-                        : FittedBox(
-                            fit: BoxFit.cover,
-                            child: Image.network(_imageUrlController.text),
-                          ),
+                        : Image.network(_imageUrlController.text),
                   ),
                 ],
               ),

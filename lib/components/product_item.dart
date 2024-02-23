@@ -49,19 +49,21 @@ class ProductItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                ).then((value) {
-                  if (value ?? false) {
-                    Provider.of<ProductList>(
-                      context,
-                      listen: false,
-                    ).removeProduct(product);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Produto removido com sucesso!'),
-                      ),
-                    );
-                  }
-                });
+                ).then(
+                  (value) {
+                    if (value ?? false) {
+                      Provider.of<ProductList>(
+                        context,
+                        listen: false,
+                      ).removeProduct(product);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Produto removido com sucesso!'),
+                        ),
+                      );
+                    }
+                  },
+                );
               },
             ),
           ],

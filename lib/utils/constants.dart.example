@@ -1,0 +1,5 @@
+class Constants {
+     # firebase or DB URL
+  static const productBaseUrl =
+      'https://coloque a sua url aqui .europe-west1.firebasedatabase.app';
+}
