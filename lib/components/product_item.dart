@@ -1,3 +1,4 @@
+import 'package:shop/exceptions/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
@@ -10,6 +11,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final msg = ScaffoldMessenger.of(context);
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(product.imageUrl),
@@ -31,7 +33,7 @@ class ProductItem extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete),
-              color: Theme.of(context).errorColor,
+              color: Theme.of(context).colorScheme.error,
               onPressed: () {
                 showDialog<bool>(
                   context: context,
@@ -50,17 +52,25 @@ class ProductItem extends StatelessWidget {
                     ],
                   ),
                 ).then(
-                  (value) {
+                  (value) async {
                     if (value ?? false) {
-                      Provider.of<ProductList>(
-                        context,
-                        listen: false,
-                      ).removeProduct(product);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Produto removido com sucesso!'),
-                        ),
-                      );
+                      try {
+                        await Provider.of<ProductList>(
+                          context,
+                          listen: false,
+                        ).removeProduct(product);
+                        msg.showSnackBar(
+                          const SnackBar(
+                            content: Text('Produto removido com sucesso!'),
+                          ),
+                        );
+                      } on HttpException catch (error) {
+                        msg.showSnackBar(
+                          SnackBar(
+                            content: Text(error.toString()),
+                          ),
+                        );
+                      }
                     }
                   },
                 );
