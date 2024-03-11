@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           textTheme: const TextTheme(
               bodyMedium: TextStyle(),
               bodyLarge: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
               )),
           primarySwatch: Colors.blue,
           hintColor: Colors.deepOrange,
