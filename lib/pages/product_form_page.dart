@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/product.dart';
@@ -149,6 +151,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         }
                         return null;
                       },
+                      style: const TextStyle(color: Colors.black),
                     ),
                     TextFormField(
                       initialValue: _formData['price']?.toString(),
@@ -174,6 +177,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
                         return null;
                       },
+                      style: const TextStyle(color: Colors.black),
                     ),
                     TextFormField(
                       initialValue: _formData['description']?.toString(),
@@ -196,6 +200,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
                         return null;
                       },
+                      style: const TextStyle(color: Colors.black),
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -220,6 +225,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
                               return null;
                             },
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                         Container(

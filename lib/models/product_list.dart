@@ -20,19 +20,23 @@ class ProductList with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
-    final response = await http.get(Uri.parse('$_baseUrl/products.json'));
+
+    final response = await http.get(
+      Uri.parse('${Constants.productBaseUrl}/products.json'),
+    );
     if (response.body == 'null') return;
     Map<String, dynamic> data = jsonDecode(response.body);
-    _items.clear();
     data.forEach((productId, productData) {
-      _items.add(Product(
-        id: productId,
-        name: productData['name'],
-        description: productData['description'],
-        price: productData['price'],
-        imageUrl: productData['imageUrl'],
-        isFavorite: productData['isFavorite'],
-      ));
+      _items.add(
+        Product(
+          id: productId,
+          name: productData['name'],
+          description: productData['description'],
+          price: productData['price'],
+          imageUrl: productData['imageUrl'],
+          isFavorite: productData['isFavorite'],
+        ),
+      );
     });
     notifyListeners();
   }
