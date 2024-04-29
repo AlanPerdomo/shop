@@ -31,7 +31,7 @@ class Product with ChangeNotifier {
   Future<void> toggleFavorite() async {
     _toggleFavorite();
     final response = await http.patch(
-      Uri.parse('$_baseUrl/products/$id'),
+      Uri.parse('$_baseUrl/products/$id.json'),
       body: jsonEncode({"isFavorite": isFavorite}),
     );
 
