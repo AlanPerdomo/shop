@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/exceptions/auth_exception.dart';
+import 'package:shop/models/auth.dart';
 
 enum AuthMode { signup, login }
 
@@ -10,20 +13,75 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   AuthMode _authMode = AuthMode.login;
-  Map<String, String> _authData = {
+  final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
-  final _formKey = GlobalKey<FormState>();
-  final _passwordController = TextEditingController();
 
-  void _submit() {
-    if (_authMode == AuthMode.signup) {
-      print('Crie sua conta');
-    } else {
-      print('Entrar');
+  bool _isLogin() => _authMode == AuthMode.login;
+  bool _isSignup() => _authMode == AuthMode.signup;
+
+  void _switchAuthMode() {
+    setState(() {
+      if (_isLogin()) {
+        _authMode = AuthMode.signup;
+      } else {
+        _authMode = AuthMode.login;
+      }
+    });
+  }
+
+  void _showErrorDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Ocorreo um Erro'),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Fechar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submit() async {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
     }
+
+    setState(() => _isLoading = true);
+
+    _formKey.currentState?.save();
+    Auth auth = Provider.of(context, listen: false);
+
+    try {
+      if (_isLogin()) {
+        await auth.login(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      } else {
+        await auth.signup(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      }
+    } on AuthException catch (error) {
+      _showErrorDialog(error.toString());
+    } catch (error) {
+      _showErrorDialog('Ocorreu um erro inesperado');
+    }
+
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -36,9 +94,10 @@ class _AuthFormState extends State<AuthForm> {
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
-        height: 320,
+        height: _isLogin() ? 310 : 400,
         width: deviceSize.width * 0.75,
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
@@ -48,7 +107,7 @@ class _AuthFormState extends State<AuthForm> {
                 validator: (_email) {
                   final email = _email ?? '';
                   if (email.trim().isEmpty || !email.contains('@')) {
-                    return 'E-mail inválido';
+                    return 'Informe um e-mail válido.';
                   }
                   return null;
                 },
@@ -62,43 +121,53 @@ class _AuthFormState extends State<AuthForm> {
                 validator: (_password) {
                   final password = _password ?? '';
                   if (password.isEmpty || password.length < 5) {
-                    return 'Senha inválida';
+                    return 'Informe uma senha válida';
                   }
                   return null;
                 },
               ),
-              if (_authMode == AuthMode.signup)
+              if (_isSignup())
                 TextFormField(
                   decoration:
                       const InputDecoration(labelText: 'Confirmar Senha'),
                   keyboardType: TextInputType.emailAddress,
                   obscureText: true,
-                  validator: _authMode == AuthMode.login
+                  validator: _isLogin()
                       ? null
                       : (_password) {
                           final password = _password ?? '';
                           if (password != _passwordController.text) {
-                            return 'As senhas precisam ser iguais';
+                            return 'Senhas informadas não conferem.';
                           }
                           return null;
                         },
                 ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 8,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 8,
+                  child: Text(
+                    _authMode == AuthMode.login ? 'ENTRAR' : 'REGISTRAR',
                   ),
                 ),
+              const Spacer(),
+              TextButton(
+                onPressed: _switchAuthMode,
                 child: Text(
-                  _authMode == AuthMode.login ? 'Entrar' : 'Cadastrar',
+                  _isLogin() ? 'DESEJA REGISTRAR?' : 'JÁ POSSUI CONTA?',
                 ),
-              )
+              ),
             ],
           ),
         ),
