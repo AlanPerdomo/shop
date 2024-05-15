@@ -101,6 +101,7 @@ class _AuthFormState extends State<AuthForm> {
           child: Column(
             children: [
               TextFormField(
+                style: TextStyle(color: Theme.of(context).primaryColor),
                 decoration: const InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (email) => _authData['email'] = email ?? '',
@@ -113,6 +114,7 @@ class _AuthFormState extends State<AuthForm> {
                 },
               ),
               TextFormField(
+                style: TextStyle(color: Theme.of(context).primaryColor),
                 decoration: const InputDecoration(labelText: 'Senha'),
                 keyboardType: TextInputType.emailAddress,
                 obscureText: true,
@@ -128,6 +130,7 @@ class _AuthFormState extends State<AuthForm> {
               ),
               if (_isSignup())
                 TextFormField(
+                  style: TextStyle(color: Theme.of(context).primaryColor),
                   decoration:
                       const InputDecoration(labelText: 'Confirmar Senha'),
                   keyboardType: TextInputType.emailAddress,
